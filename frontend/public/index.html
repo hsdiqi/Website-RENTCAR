@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Sewa mobil mudah dan cepat dengan RentCar. Tersedia berbagai pilihan mobil terbaik." />
+    <meta name="keywords" content="sewa mobil, rental mobil, rent car, mobil dengan sopir, travel, liburan" />
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="./favicon_io/favicon.ico" type="image/x-icon" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/c4d1604882.js" crossorigin="anonymous"></script>
+
+    <title>PANDAWA RentCar</title>
+
+    <style>
+      /* Custom styles for specific sections */
+      .home,
+      .hiw,
+      .top-rate,
+      .review,
+      .footer {
+        padding: 0;
+        max-width: 2000px;
+      }
+
+      .home {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .container-1,
+      .container-2 {
+        flex: 1;
+        padding: 20px;
+        max-width: 3000px;
+      }
+
+      .container-2 {
+        text-align: center;
+      }
+
+      .container-2 img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      }
+
+      .hiw .container-hiw {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 60px 20px;
+      }
+
+      .hiw .container-hiw > div {
+        flex: 1;
+        text-align: center;
+        min-width: 150px;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .hiw .container-hiw > div:hover {
+        transform: translateY(-10px);
+      }
+
+      .top-rate .container-top-rate {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 20px;
+        padding: 60px 20px;
+      }
+
+      .top-rate .card,
+      .review .card {
+        flex: 1 1 calc(33.333% - 40px);
+        max-width: 300px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        border: none;
+      }
+
+      .top-rate .card:hover,
+      .review .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      }
+
+      .review {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+
+      .footer {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 60px 20px 20px;
+      }
+
+      .footer .section-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+      }
+
+      .footer .image-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .footer .address-container {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Custom animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      @media (max-width: 768px) {
+        .home,
+        .hiw .container-hiw,
+        .footer .section-container {
+          flex-direction: column;
+        }
+
+        .top-rate .card,
+        .review .card {
+          flex: 1 1 100%;
+        }
+
+        .container-1,
+        .container-2 {
+          padding: 20px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
