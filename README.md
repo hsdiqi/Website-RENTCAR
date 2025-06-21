@@ -20,7 +20,7 @@ This repository contains the source code for a web application for renting cars.
 ## Running the Application
 1. **Backend**: Navigate to the backend directory and run the following command to start the server using Nodemon:
    ```
-   nodemon server.js
+   npm run dev
    ```
 
 2. **Frontend**: Navigate to the frontend directory and run the following command to start the React development server:
