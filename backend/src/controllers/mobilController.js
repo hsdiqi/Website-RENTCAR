@@ -4,7 +4,6 @@ const fs = require("fs");
 const path = require("path");
 // const { console } = require("inspector");
 
-
 exports.showAllCar = async (req, res) => {
   try {
     const category = await queryAsync(
@@ -72,7 +71,7 @@ exports.updateCar = async (req, res) => {
       service,
       speed,
       harga,
-      status
+      status,
     } = req.body;
     const image = req.file;
 
@@ -82,13 +81,13 @@ exports.updateCar = async (req, res) => {
       "SELECT * FROM kendaraan WHERE ID_KENDARAAN = :id",
       { id }
     );
-    // console.log(checkCar)
-    if (!checkCar || checkCar.rows.length === 0) {
+    // console.log(`checkCar: ${checkCar} \ncheckcar[0] ${checkCar[0]}`)
+    if (!checkCar || checkCar.length === 0) {
       return res.status(404).json({ message: "Kendaraan tidak ditemukan." });
     }
 
-    const carData = checkCar.rows[0];
-    console.log(carData);
+    const carData = checkCar;
+    console.log("carData: ", carData);
 
     let updateFields = [];
     let bindParams = { id };
@@ -112,7 +111,9 @@ exports.updateCar = async (req, res) => {
       updateFields.push("TIPE_KENDARAAN = :tipe");
       updateFields.push(`KATALOG_KENDARAAN_ID_KATEGORI = :idKategori`);
       bindParams.tipe = tipe;
-      bindParams.idKategori = idResult.rows[0].ID_KATEGORI;
+      bindParams.idKategori = idResult[0].ID_KATEGORI;
+      console.log(idResult);
+      console.log(idResult[0].ID_KATEGORI);
     }
 
     if (harga !== undefined) {
@@ -141,8 +142,9 @@ exports.updateCar = async (req, res) => {
     }
 
     if (service !== undefined) {
+      const serviceDate = new Date(service).toISOString().split("T")[0]; // hasil: "2023-08-30"
       updateFields.push("LAST_SERVICE = TO_DATE(:service, 'YYYY-MM-DD')");
-      bindParams.service = service;
+      bindParams.service = serviceDate;
     }
 
     if (nopol !== undefined) {
@@ -166,18 +168,26 @@ exports.updateCar = async (req, res) => {
         "images",
         "cars"
       );
-      const oldPath = path.join(imagePath, carData.FOTO_KENDARAAN);
+
+      // const oldPath = path.join(imagePath, carData.FOTO_KENDARAAN);
       const newPath = path.join(imagePath, uniqueName);
 
       fs.writeFileSync(newPath, image.buffer);
 
-      if (carData.FOTO_KENDARAAN && fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-        console.log(`Deleted old image: ${oldPath}`);
+      if (
+        carData.FOTO_KENDARAAN &&
+        typeof carData.FOTO_KENDARAAN === "string"
+      ) {
+        const oldPath = path.join(imagePath, carData.FOTO_KENDARAAN);
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+          console.log(`Deleted old image: ${oldPath}`);
+        }
       }
       updateFields.push("FOTO_KENDARAAN = :foto");
       bindParams.foto = uniqueName;
     }
+    console.log("updateFields:", updateFields);
 
     if (updateFields.length === 0) {
       return res.status(400).json({ message: "Tidak ada perubahan data" });
@@ -193,7 +203,10 @@ exports.updateCar = async (req, res) => {
       message: "Kendaraan berhasil diperbarui",
       updateData: Object.keys(bindParams).filter((key) => key !== "id"),
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.deleteCar = async (req, res) => {
