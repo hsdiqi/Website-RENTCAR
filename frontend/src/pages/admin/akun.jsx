@@ -1,110 +1,109 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import axios from "axios"
-import NavbarAdmin from "../../components/admin/navbar"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import NavbarAdmin from "../../components/admin/navbar";
 
 function ManajemenAkun() {
-  const [accounts, setAccounts] = useState([])
-  const [userID, setUserID] = useState("")
-  const [namaDepan, setNamaDepan] = useState("")
-  const [namaBelakang, setNamaBelakang] = useState("")
-  const [alamat, setAlamat] = useState("")
-  const [notelp, setNotelp] = useState("")
-  const [email, setEmail] = useState("")
-  const [nik, setNik] = useState("")
-  const [password, setPassword] = useState("")
-  const [memberID, setMemberID] = useState("")
-  const [pointMember, setPointMember] = useState("")
-  const [jenisMember, setJenisMember] = useState("")
+  const [accounts, setAccounts] = useState([]);
+  const [userID, setUserID] = useState("");
+  const [namaDepan, setNamaDepan] = useState("");
+  const [namaBelakang, setNamaBelakang] = useState("");
+  const [alamat, setAlamat] = useState("");
+  const [notelp, setNotelp] = useState("");
+  const [email, setEmail] = useState("");
+  const [nik, setNik] = useState("");
+  const [password, setPassword] = useState("");
+  const [memberID, setMemberID] = useState("");
+  const [pointMember, setPointMember] = useState("");
+  const [jenisMember, setJenisMember] = useState("");
 
-  const [selected, setSelected] = useState(null)
-  const [isEditing, setIsEditing] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [selected, setSelected] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   useEffect(() => {
     if (selected) {
-      setUserID(selected.ID_PELANGGAN)
-      const [firstName, ...lastNameParts] = selected.NAMA_PELANGGAN.split(" ")
-      setNamaDepan(firstName)
-      setNamaBelakang(lastNameParts.join(" "))
-      setNotelp(selected.NOMOR_TELEPON)
-      setNik(selected.NIK)
-      setMemberID(selected.MEMBER_ID_PELANGGAN)
-      setPointMember(selected.POINT_MEMBERSHIP)
-      setAlamat(selected.ALAMAT)
-      setEmail(selected.EMAIL)
-      setPassword(selected.PASSWORD)
-      setJenisMember(selected.JENIS_MEMBERSHIP)
+      setUserID(selected.ID_PELANGGAN);
+      const [firstName, ...lastNameParts] = selected.NAMA_PELANGGAN.split(" ");
+      setNamaDepan(firstName);
+      setNamaBelakang(lastNameParts.join(" "));
+      setNotelp(selected.NOMOR_TELEPON);
+      setNik(selected.NIK);
+      setMemberID(selected.MEMBER_ID_PELANGGAN);
+      setPointMember(selected.POINT_MEMBERSHIP);
+      setAlamat(selected.ALAMAT);
+      setEmail(selected.EMAIL);
+      setPassword(selected.PASSWORD);
+      setJenisMember(selected.JENIS_MEMBERSHIP);
     }
-  }, [selected])
+  }, [selected]);
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const fetchData = () => {
     axios
-      .get("http://localhost:3003/api/admin/pelanggan")
+      .get("http://localhost:3003/api/pelanggan/show")
       .then((response) => {
         if (Array.isArray(response.data)) {
-          setAccounts(response.data)
+          setAccounts(response.data);
         } else {
-          console.log("respon bukan array: ", response.data)
+          console.log("respon bukan array: ", response.data);
         }
       })
       .catch((error) => {
-        console.error("Error fetching accounts:", error)
-      })
-  }
+        console.error("Error fetching accounts:", error);
+      });
+  };
 
   const hapusHandling = (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus akun ini?")) {
       axios
-        .put(`http://localhost:3003/api/admin/pelanggan/del/${id}`)
+        .put(`http://localhost:3003/api/admin/pelanggan/del`, { id })
         .then((response) => {
           if (response.status === 200) {
-            alert("Berhasil menghapus akun")
-            fetchData()
+            alert("Berhasil menghapus akun");
+            fetchData();
           }
         })
         .catch((error) => {
-          console.error("Error deleting account:", error)
-        })
+          console.error("Error deleting account:", error);
+        });
     }
-  }
+  };
 
   const detailHandling = (id) => {
-    const userID = accounts.find((account) => account.ID_PELANGGAN === id)
-    setSelected(userID)
-    setIsEditing(false)
-  }
+    const userID = accounts.find((account) => account.ID_PELANGGAN === id);
+    setSelected(userID);
+    setIsEditing(false);
+  };
 
   const ubahHandling = (id) => {
-    const userID = accounts.find((account) => account.ID_PELANGGAN === id)
-    setSelected(userID)
-    setIsEditing(true)
-  }
+    const userID = accounts.find((account) => account.ID_PELANGGAN === id);
+    setSelected(userID);
+    setIsEditing(true);
+  };
 
   const handleSimpan = () => {
-    if (jenisMember === "Regular") {
-      setMemberID(1)
-    } else if (jenisMember === "Bronze") {
-      setMemberID(2)
-    } else if (jenisMember === "Silver") {
-      setMemberID(3)
-    } else if (jenisMember === "Gold") {
-      setMemberID(4)
-    } else if (jenisMember === "Platinum") {
-      setMemberID(5)
-    } else {
-      setMemberID(null)
-    }
+    const mappedMemberID =
+      jenisMember === "Regular"
+        ? 1
+        : jenisMember === "Bronze"
+        ? 2
+        : jenisMember === "Silver"
+        ? 3
+        : jenisMember === "Gold"
+        ? 4
+        : jenisMember === "Platinum"
+        ? 5
+        : null;
 
     const updateUserData = {
       userID,
@@ -115,47 +114,51 @@ function ManajemenAkun() {
       email,
       alamat,
       password,
-      memberID,
+      memberID: mappedMemberID,
       pointMember,
-    }
+    };
+
+    console.log("member id yang baru: ",mappedMemberID)
+    console.log("DATA DIKIRIM:", updateUserData)
+
 
     axios
-      .post("http://localhost:3003/api/admin/pelanggan/update", updateUserData)
+      .put("http://localhost:3003/api/pelanggan/admin/update", updateUserData)
       .then((response) => {
-        if (response.status === 204) {
-          alert("Data Pelanggan berhasil diupdate")
-          setIsEditing(false)
-          fetchData()
+        if (response.status === 200) {
+          alert("Data Pelanggan berhasil diupdate");
+          setIsEditing(false);
+          fetchData();
         }
       })
       .catch((error) => {
-        console.error("Error updating pelanggan:", error)
-      })
-  }
+        console.error("Error updating pelanggan:", error);
+      });
+  };
 
   const filteredAccounts = accounts.filter(
     (account) =>
       account.NAMA_PELANGGAN.toLowerCase().includes(searchTerm.toLowerCase()) ||
       account.EMAIL.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      account.ID_PELANGGAN.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      account.ID_PELANGGAN.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const getMembershipColor = (membership) => {
     switch (membership) {
       case "Regular":
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-200";
       case "Bronze":
-        return "bg-orange-100 text-orange-800 border-orange-200"
+        return "bg-orange-100 text-orange-800 border-orange-200";
       case "Silver":
-        return "bg-gray-200 text-gray-800 border-gray-300"
+        return "bg-gray-200 text-gray-800 border-gray-300";
       case "Gold":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "Platinum":
-        return "bg-purple-100 text-purple-800 border-purple-200"
+        return "bg-purple-100 text-purple-800 border-purple-200";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -168,7 +171,9 @@ function ManajemenAkun() {
               <i className="fas fa-users mr-4 text-blue-600"></i>
               Manajemen Akun Pelanggan
             </h1>
-            <p className="text-gray-700 mt-2 font-medium">Kelola data akun pelanggan rental</p>
+            <p className="text-gray-700 mt-2 font-medium">
+              Kelola data akun pelanggan rental
+            </p>
           </div>
 
           {/* Search Bar */}
@@ -197,7 +202,9 @@ function ManajemenAkun() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                      No
+                    </th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Pelanggan
                     </th>
@@ -217,15 +224,22 @@ function ManajemenAkun() {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {filteredAccounts.map((account, index) => (
-                    <tr key={account.ID_PELANGGAN} className="hover:bg-gray-50 transition duration-150">
-                      <td className="px-6 py-4 text-sm font-bold text-gray-900">{index + 1}</td>
+                    <tr
+                      key={account.ID_PELANGGAN}
+                      className="hover:bg-gray-50 transition duration-150"
+                    >
+                      <td className="px-6 py-4 text-sm font-bold text-gray-900">
+                        {index + 1}
+                      </td>
                       <td className="px-6 py-4">
                         <div>
                           <div className="text-sm font-bold text-gray-900 flex items-center">
                             <i className="fas fa-user mr-2 text-blue-600"></i>
                             {account.NAMA_PELANGGAN}
                           </div>
-                          <div className="text-sm text-gray-600 font-medium">{account.ID_PELANGGAN}</div>
+                          <div className="text-sm text-gray-600 font-medium">
+                            {account.ID_PELANGGAN}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -242,7 +256,9 @@ function ManajemenAkun() {
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-flex px-3 py-1 text-xs font-bold rounded-full border ${getMembershipColor(account.JENIS_MEMBERSHIP)}`}
+                          className={`inline-flex px-3 py-1 text-xs font-bold rounded-full border ${getMembershipColor(
+                            account.JENIS_MEMBERSHIP
+                          )}`}
                         >
                           <i className="fas fa-crown mr-1"></i>
                           {account.JENIS_MEMBERSHIP}
@@ -261,7 +277,11 @@ function ManajemenAkun() {
                           }`}
                         >
                           <i
-                            className={`fas ${account.STATUS === "aktif" ? "fa-check-circle" : "fa-times-circle"} mr-1`}
+                            className={`fas ${
+                              account.STATUS === "aktif"
+                                ? "fa-check-circle"
+                                : "fa-times-circle"
+                            } mr-1`}
                           ></i>
                           {account.STATUS}
                         </span>
@@ -305,13 +325,19 @@ function ManajemenAkun() {
                 <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-blue-50">
                   <div className="flex justify-between items-center">
                     <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                      <i className={`fas ${isEditing ? "fa-edit" : "fa-info-circle"} mr-3 text-indigo-600`}></i>
-                      {isEditing ? "Edit Akun Pelanggan" : "Detail Akun Pelanggan"}
+                      <i
+                        className={`fas ${
+                          isEditing ? "fa-edit" : "fa-info-circle"
+                        } mr-3 text-indigo-600`}
+                      ></i>
+                      {isEditing
+                        ? "Edit Akun Pelanggan"
+                        : "Detail Akun Pelanggan"}
                     </h3>
                     <button
                       onClick={() => {
-                        setSelected(null)
-                        setIsEditing(false)
+                        setSelected(null);
+                        setIsEditing(false);
                       }}
                       className="text-gray-500 hover:text-red-600 transition duration-200"
                     >
@@ -476,18 +502,30 @@ function ManajemenAkun() {
                           <div className="space-y-3">
                             <div className="flex items-center">
                               <i className="fas fa-user mr-3 text-gray-600 w-5"></i>
-                              <span className="text-gray-700 font-medium">Nama:</span>
-                              <span className="font-bold ml-2">{selected.NAMA_PELANGGAN}</span>
+                              <span className="text-gray-700 font-medium">
+                                Nama:
+                              </span>
+                              <span className="font-bold ml-2">
+                                {selected.NAMA_PELANGGAN}
+                              </span>
                             </div>
                             <div className="flex items-center">
                               <i className="fas fa-id-card mr-3 text-gray-600 w-5"></i>
-                              <span className="text-gray-700 font-medium">NIK:</span>
-                              <span className="font-bold ml-2">{selected.NIK}</span>
+                              <span className="text-gray-700 font-medium">
+                                NIK:
+                              </span>
+                              <span className="font-bold ml-2">
+                                {selected.NIK}
+                              </span>
                             </div>
                             <div className="flex items-start">
                               <i className="fas fa-map-marker-alt mr-3 text-gray-600 w-5 mt-1"></i>
-                              <span className="text-gray-700 font-medium">Alamat:</span>
-                              <span className="font-bold ml-2">{selected.ALAMAT}</span>
+                              <span className="text-gray-700 font-medium">
+                                Alamat:
+                              </span>
+                              <span className="font-bold ml-2">
+                                {selected.ALAMAT}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -499,27 +537,43 @@ function ManajemenAkun() {
                           <div className="space-y-3">
                             <div className="flex items-center">
                               <i className="fas fa-envelope mr-3 text-gray-600 w-5"></i>
-                              <span className="text-gray-700 font-medium">Email:</span>
-                              <span className="font-bold ml-2">{selected.EMAIL}</span>
+                              <span className="text-gray-700 font-medium">
+                                Email:
+                              </span>
+                              <span className="font-bold ml-2">
+                                {selected.EMAIL}
+                              </span>
                             </div>
                             <div className="flex items-center">
                               <i className="fas fa-phone mr-3 text-gray-600 w-5"></i>
-                              <span className="text-gray-700 font-medium">Telepon:</span>
-                              <span className="font-bold ml-2">{selected.NOMOR_TELEPON}</span>
+                              <span className="text-gray-700 font-medium">
+                                Telepon:
+                              </span>
+                              <span className="font-bold ml-2">
+                                {selected.NOMOR_TELEPON}
+                              </span>
                             </div>
                             <div className="flex items-center">
                               <i className="fas fa-crown mr-3 text-gray-600 w-5"></i>
-                              <span className="text-gray-700 font-medium">Membership:</span>
+                              <span className="text-gray-700 font-medium">
+                                Membership:
+                              </span>
                               <span
-                                className={`ml-2 inline-flex px-3 py-1 text-xs font-bold rounded-full border ${getMembershipColor(selected.JENIS_MEMBERSHIP)}`}
+                                className={`ml-2 inline-flex px-3 py-1 text-xs font-bold rounded-full border ${getMembershipColor(
+                                  selected.JENIS_MEMBERSHIP
+                                )}`}
                               >
                                 {selected.JENIS_MEMBERSHIP}
                               </span>
                             </div>
                             <div className="flex items-center">
                               <i className="fas fa-star mr-3 text-gray-600 w-5"></i>
-                              <span className="text-gray-700 font-medium">Poin:</span>
-                              <span className="font-bold ml-2 text-yellow-600">{selected.POINT_MEMBERSHIP}</span>
+                              <span className="text-gray-700 font-medium">
+                                Poin:
+                              </span>
+                              <span className="font-bold ml-2 text-yellow-600">
+                                {selected.POINT_MEMBERSHIP}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -529,8 +583,12 @@ function ManajemenAkun() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
                             <i className="fas fa-lock mr-3 text-gray-600"></i>
-                            <span className="text-gray-700 font-medium">Password:</span>
-                            <span className="font-bold ml-2">{showPassword ? selected.PASSWORD : "••••••••"}</span>
+                            <span className="text-gray-700 font-medium">
+                              Password:
+                            </span>
+                            <span className="font-bold ml-2">
+                              {showPassword ? selected.PASSWORD : "••••••••"}
+                            </span>
                           </div>
                           <label className="flex items-center cursor-pointer">
                             <input
@@ -538,7 +596,9 @@ function ManajemenAkun() {
                               className="mr-2 w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500"
                               onChange={togglePasswordVisibility}
                             />
-                            <span className="text-sm text-gray-700 font-medium">Tampilkan Password</span>
+                            <span className="text-sm text-gray-700 font-medium">
+                              Tampilkan Password
+                            </span>
                           </label>
                         </div>
                       </div>
@@ -551,7 +611,7 @@ function ManajemenAkun() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ManajemenAkun
+export default ManajemenAkun;

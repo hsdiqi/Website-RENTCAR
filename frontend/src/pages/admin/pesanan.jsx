@@ -29,7 +29,7 @@ const Pemesan = () => {
 
   const fetchData = () => {
     axios
-      .get("http://localhost:3003/api/admin/pesanan")
+      .get("http://localhost:3003/api/pesanan/show")
       .then((response) => {
         console.log("respon data: ", response.data)
         if (Array.isArray(response.data)) {
@@ -74,7 +74,7 @@ const Pemesan = () => {
   const handlingDelete = (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus pesanan ini?")) {
       axios
-        .post("http://localhost:3003/api/admin/pesanan/del", { id })
+        .put("http://localhost:3003/api/pesanan/admin/del", { id })
         .then((response) => {
           if (response.status === 200) {
             alert("Berhasil menghapus pesanan")
@@ -116,9 +116,9 @@ const Pemesan = () => {
     }
 
     axios
-      .post("http://localhost:3003/api/admin/pesanan/update", updateBooking)
+      .post("http://localhost:3003/api/pesanan/admin/update", updateBooking)
       .then((response) => {
-        if (response.status === 204) {
+        if (response.status === 200) {
           alert("Data pesanan berhasil diupdate")
           setIsEditing(false)
           fetchData()

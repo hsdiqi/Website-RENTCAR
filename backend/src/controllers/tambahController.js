@@ -3,6 +3,7 @@ const queryAsync = require("../utils/db");
 const { saveImageBuffer } = require("../utils/fileSaver");
 
 exports.addCar = async (req, res) => {
+  console.log("endpint hit")
   try {
     const {
       nameCar,
@@ -54,6 +55,7 @@ exports.addCar = async (req, res) => {
     }
 
     const idKategori = idResult[0].ID_KATEGORI;
+    console.log(idKategori)
     const uniqueName = `${Date.now()}-${imageName}`;
 
     const result = await queryAsync(

@@ -2,6 +2,7 @@ const express = require("express");
 const queryAsync = require("../utils/db");
 const fs = require("fs");
 const path = require("path");
+const { console } = require("inspector");
 // const { saveImageBuffer } = require("../utils/fileSaver");
 // const router = express.Router();
 
@@ -24,8 +25,8 @@ exports.showAllPelanggan = async (req, res) => {
 
 exports.updatePelanggan = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { nama, email, no_telp, alamat, membership } = req.body;
+    // const { id } = req.params;
+    const { id, nama, email, no_telp, alamat, membership } = req.body;
     const image = req.file;
     // Check if the user exists
     const user = await queryAsync(
@@ -78,8 +79,10 @@ exports.updatePelanggan = async (req, res) => {
 };
 
 exports.deletePelanggan = async (req, res) => {
+  console.log("delet pelanggan");
   try {
-    const { id } = req.params;
+    const { id } = req.body;
+    console.log(id);
 
     // Check if the user exists
     const user = await queryAsync(
@@ -119,8 +122,7 @@ exports.showAllKaryawan = async (req, res) => {
 
 exports.updateKaryawan = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { nama, email, no_telp, alamat, jabatan } = req.body;
+    const { id, nama, email, no_telp, alamat, jabatan } = req.body;
     // Check if the user exists
     const user = await queryAsync(
       "SELECT * FROM karyawan WHERE ID_KARYAWAN = :id",
@@ -173,7 +175,7 @@ exports.updateKaryawan = async (req, res) => {
 
 exports.deleteKaryawan = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     // Check if the user exists
     const user = await queryAsync(
       "SELECT * FROM karyawan WHERE ID_KARYAWAN = :id",
@@ -227,10 +229,33 @@ exports.showAllCar = async (req, res) => {
   }
 };
 
-exports.updateCar = async (req, res) => {
+exports.selectedCar = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.body.carId;
+    // console.log("id:", req.body)
+    const car = await queryAsync(
+      "SELECT * FROM  kendaraan WHERE ID_KENDARAAN = :id",
+      { id }
+    );
+    if (car.length === 0) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+    // console.log("car:",car)
+    // console.log("rows:", car.rows)
+    // console.log("index0:", car[0])
+
+    res.status(200).json({ message: "Car found", data: car[0] });
+  } catch (err) {
+    console.error("Error fetching car:", err);
+  }
+};
+
+exports.updateCar = async (req, res) => {
+  console.log("edit endpoint hit");
+  try {
+    // const { id } = req.params;
     const {
+      id,
       nameCar,
       tipe,
       color,
@@ -243,15 +268,19 @@ exports.updateCar = async (req, res) => {
     } = req.body;
     const image = req.file;
 
+    // console.log(id)
+
     const checkCar = await queryAsync(
       "SELECT * FROM kendaraan WHERE ID_KENDARAAN = :id",
       { id }
     );
+    // console.log(checkCar)
     if (!checkCar || checkCar.rows.length === 0) {
       return res.status(404).json({ message: "Kendaraan tidak ditemukan." });
     }
 
     const carData = checkCar.rows[0];
+    console.log(carData);
 
     let updateFields = [];
     let bindParams = { id };
@@ -346,6 +375,7 @@ exports.updateCar = async (req, res) => {
       ", "
     )} WHERE ID_KENDARAAN = :id`;
     await queryAsync(updateQuery, bindParams);
+    console.log("sekses");
 
     res.status(200).json({
       message: "Kendaraan berhasil diperbarui",
@@ -447,21 +477,28 @@ exports.updatePesanan = async (req, res) => {
 };
 
 exports.deletePesanan = async (req, res) => {
+  console.log("pesana delte");
   try {
-    const { id } = req.params;
+    const { id } = req.body;
+    console.log("id yang dikirim:", id, typeof id);
 
     // Check if the order exists
     const order = await queryAsync(
-      "SELECT * FROM pesanan WHERE ID_PESANAN = :id",
+      "SELECT * FROM pemesanan WHERE ID_PEMESANAN = :id",
       { id }
     );
+    console.log(order.length);
     if (order.length === 0) {
-      return res.status(404).json({ message: "Order not found" });
+      console.log(order);
+      return res.status(404).json({
+        message: "pesanan tidak ada",
+        data: order,
+      });
     }
 
     // Update the status to 'deleted'
     await queryAsync(
-      "UPDATE pesanan SET status = 'deleted' WHERE ID_PESANAN = :id",
+      "UPDATE pemesanan SET status_pemesanan = 'deleted' WHERE ID_PEMESANAN = :id",
       { id }
     );
 

@@ -12,5 +12,8 @@ router.use('/cars', cars);
 router.use('/images', imagesRoute);
 router.use('/clients', require('./clients.js'));
 router.use('/admin', require('./admin.js'));
+router.use('/karyawan', require('./karyawan.js'))
+router.use('/pesanan', require('./pesanan.js'));
+router.use('/pelanggan', require('./pelanggan.js'))
 
 module.exports = router;

@@ -1,15 +1,15 @@
 const OracleDB = require("../config/db");
-const dbConfig = require("../config/db");
 
 async function queryAsync(sql, params = []) {
   let connection;
 
   try {
-    connection = await dbConfig.getConnection();
+    connection = await OracleDB.getConnection();
     const result = await connection.execute(
       sql,
       params,
-      { outFormat: OracleDB.OUT_FORMAT_OBJECT }
+      { outFormat: OracleDB.OUT_FORMAT_OBJECT },
+      // {poolAlias: 'default'}
     );
     return result.rows; 
   } catch (error) {

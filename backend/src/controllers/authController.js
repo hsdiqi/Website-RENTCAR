@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
-    const { namaDepan, namaBelakang, nik, email, noTelp, password } = req.body;
-    if (!namaDepan || !namaBelakang || !nik || !email || !noTelp || !password) {
+    const { namaDepan, namaBelakang, nik, email, noTelp, password, alamat } = req.body;
+    if (!namaDepan || !namaBelakang || !nik || !email || !noTelp || !alamat || !password) {
       return res.status(400).json({ message: "Semua field harus diisi" });
     }
 
@@ -29,20 +29,22 @@ exports.register = async (req, res) => {
       nik,
       email,
       noTelp,
+      alamat,
       password: hashedPassword,
     };
 
     const result = await queryAsync(
       `INSERT INTO pelanggan 
-    (nama_depan, nama_belakang, nik, email, no_telp, password) 
+    (nama_depan, nama_belakang, nik, email, nomor_telepon, alamat, password) 
    VALUES 
-    (:nama_depan, :nama_belakang, :nik, :email, :no_telp, :password)`,
+    (:nama_depan, :nama_belakang, :nik, :email, :no_telp, :alamat, :password)`,
       {
         nama_depan: namaDepan,
         nama_belakang: namaBelakang,
         nik,
         email,
         no_telp: noTelp,
+        alamat,
         password: hashedPassword,
       }
     );
@@ -66,37 +68,45 @@ exports.login = async (req, res) => {
         .status(400)
         .json({ message: "Email dan password harus diisi" });
     }
+    console.log(email, password);
 
     const checker = await queryAsync(
       "SELECT * FROM pelanggan WHERE email = :email",
       { email }
     );
+    console.log(checker) // ✅
 
     if (checker.length === 0) {
       return res.status(400).json({ message: "Email tidak terdaftar" });
     }
 
     const user = checker[0];
-    const checkPass = await bcrypt.compare(password, user.password);
+    console.log("user: ", user) // ✅
+
+    const checkPass = await bcrypt.compare(password, user.PASSWORD);
     if (!checkPass) {
       return res.status(400).json({ message: "Password salah" });
     }
+
+    console.log("status pass:" + checkPass)
 
     const token = jwt.sign(
       { email: user.email, nik: user.nik },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+    console.log("login berhasil token: ", token)
 
     res.status(200).json({
       message: "Login berhasil",
       token: token,
       user: {
-        namaDepan: user.namaDepan,
-        namaBelakang: user.namaBelakang,
-        email: user.email,
-        noTelp: user.noTelp,
-        nik: user.nik,
+        id: user.ID_PELANGGAN,
+        namaDepan: user.NAMA_DEPAN,
+        namaBelakang: user.NAMA_BELAKANG,
+        email: user.EMAIL,
+        noTelp: user.NOMOR_TELEPON,
+        nik: user.NIK,
       },
     });
   } catch (error) {

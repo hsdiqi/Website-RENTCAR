@@ -6,20 +6,20 @@ const upload = require('../utils/uploads');
 
 
 router.get("/pelanggan", adminController.showAllPelanggan);
-router.put("/pelanggan/update/:id", adminController.updatePelanggan);
-router.put("/pelanggan/del/:id", adminController.deletePelanggan);
+router.put("/pelanggan/update", adminController.updatePelanggan);
+router.put("/pelanggan/del", adminController.deletePelanggan);
 
 router.get('/karyawan', adminController.showAllKaryawan);
-router.put('/karyawan/update/:id', adminController.updateKaryawan);
-router.put('/karyawan/:id', adminController.deleteKaryawan);
+router.put('/karyawan/update', adminController.updateKaryawan);
+router.put('/karyawan', adminController.deleteKaryawan);
 
 router.get("/mobil", adminController.showAllCar);
-router.put("/mobil/update/:id", upload.single('image'), adminController.updateCar);
-router.put("/mobil/del/:id", adminController.deleteCar);
+router.post("/mobil/update", upload.single('image'), adminController.updateCar);
+router.put("/mobil/del", adminController.deleteCar);
 
 router.get('/pesanan', adminController.showAllPesanan);
-router.put('/pesanan/update/:id', adminController.updatePesanan);
-router.put('/pesanan/del/:id', adminController.deletePesanan);
+router.post('/pesanan/update', adminController.updatePesanan);
+router.put('/pesanan/del', adminController.deletePesanan);
 
 router.get('/dashboard', adminController.dashboard);
 

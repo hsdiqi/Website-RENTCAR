@@ -50,7 +50,11 @@ function SignIn() {
 
     try {
       const response = await axios.post("http://localhost:3003/api/auth/login", { email, password })
-      const { accessToken, userId } = response.data
+      const data = response.data
+      console.log("response login",response)
+      const accessToken = data.token
+      // const user = data.user
+      const userId = data.user.id
 
       // Store tokens
       if (rememberMe) {

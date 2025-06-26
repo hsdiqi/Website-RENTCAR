@@ -17,25 +17,22 @@ function BookingPage() {
   const carId = searchParams.get("id");
 
   const userId = localStorage.getItem("userId");
+  // console.log(userId)
   const accessToken = localStorage.getItem("accessToken");
+  // console.log(carId)
 
   useEffect(() => {
-    axios
-      .post("http://localhost:3001/api/prebookcar", {
-        carId,
-      })
-      .then((response) => {
-        if (Array.isArray(response.data.car)) {
-          setCar(response.data.car[0]);
-          console.log("response: ", response.data.car);
-        } else {
-          console.error("Data response bukan array: ", response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-      });
-  }, [carId]);
+  axios
+    .post(`http://localhost:3003/api/clients/selectedCar`, { carId })
+    .then((response) => {
+      // console.log("respon:", response.data.data);
+      setCar(response.data.data); 
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+}, [carId]);
+
 
   useEffect(() => {
     const getToday = new Date().toISOString().split("T")[0];
@@ -57,11 +54,11 @@ function BookingPage() {
   }, [pickDate, returnDate, harga]);
 
   const handleBooking = () => {
-    console.log(accessToken, userId);
+    // console.log(accessToken, userId);
 
     axios
       .post(
-        "http://localhost:3003/api/booking",
+        "http://localhost:3003/api/clients/booking",
         {
           // withCredentials: true,
           userId,
@@ -70,15 +67,11 @@ function BookingPage() {
           returnDate,
           sumPrice,
           bookDate,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // Ensure this is correctly formatted
-          },
         }
       )
       .then((response) => {
-        if (response.status === 200) {
+        console.log(response)
+        if (response.status === 201) {
           console.log("booking sukses", response.data);
           alert("Booking berhasil");
           navigate("/main");
@@ -107,7 +100,7 @@ function BookingPage() {
   return (
     <div className="main-container">
       <header className="header">
-        <Link to="/main" style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none" }}>
             <span className="header-title">
               PANDAWA<span className="header-subtitle"> RentCar</span>
             </span>

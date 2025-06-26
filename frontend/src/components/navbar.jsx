@@ -30,6 +30,7 @@ function Navbar() {
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken")
     setIsLoggedIn(!!accessToken)
+    console.log("access token:", accessToken)
   }, [])
 
   const handleSignOut = () => {
@@ -131,7 +132,7 @@ function Navbar() {
           <div className="hidden md:flex items-center space-x-3">
             {isLoggedIn ? (
               <div className="flex items-center space-x-3">
-                <button
+                {/* <button
                   onClick={() => navigate("/profile")}
                   className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 hover:scale-105 ${
                     isScrolled
@@ -141,7 +142,7 @@ function Navbar() {
                 >
                   <i className="fas fa-user mr-2"></i>
                   Profile
-                </button>
+                </button> */}
                 <button
                   onClick={handleSignOut}
                   className="px-4 py-2 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
